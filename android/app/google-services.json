@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1093433118957",
+    "project_id": "hasseb-abud-el-warth",
+    "storage_bucket": "hasseb-abud-el-warth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093433118957:android:35d5bedac74e9324cd7ce4",
+        "android_client_info": {
+          "package_name": "com.example.amr_rezk_education"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMYhZE36eEj4kPIPMlGU55zOrI2gm5qdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
