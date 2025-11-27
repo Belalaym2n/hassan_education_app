@@ -6,16 +6,11 @@ import 'package:amr_rezk_education/features/dashboard/addLecture/presentation/wi
 import 'package:amr_rezk_education/features/homePage/presentation/widgets/educationStages/stages_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../../../../../core/utils/app_colors.dart';
-import '../../../../../../core/utils/app_constants.dart';
-import '../../../../../../core/sharedWidgets/cust_admin_field.dart';
-import '../../../../../../core/utils/custom_admin_buttons.dart';
-import '../../../data/models/lecture_model.dart';
-import '../../bloc/add_lecture_events.dart';
-import '../../bloc/add_lecture_status.dart';
-import '../../bloc/add_lectures_bloc.dart';
+import '../../bloc/lectureBloc/add_lecture_events.dart';
+
+import '../../bloc/lectureBloc/add_lecture_status.dart';
+import '../../bloc/lectureBloc/add_lectures_bloc.dart';
 
 class AddLectureScreen extends StatefulWidget {
   AddLectureScreen({super.key, required this.isPlayList});
@@ -31,7 +26,8 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   final TextEditingController nameCtrl = TextEditingController();
   final TextEditingController descCtrl = TextEditingController();
   final TextEditingController urlCtrl = TextEditingController();
-  final TextEditingController codeCtrl = TextEditingController();
+  final TextEditingController priceCtrl = TextEditingController();
+  final TextEditingController duration = TextEditingController();
 
   void clearForm(BuildContext context) {
     addLectureItemKey.currentState?.formKey.currentState
@@ -39,7 +35,8 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
     nameCtrl.clear();
     descCtrl.clear();
     urlCtrl.clear();
-    codeCtrl.clear();
+    priceCtrl.clear();
+    duration.clear();
 
     context.read<AddLectureBloc>().add(
       ChooseSectionEvent('المرحلة الدراسية', -1),
@@ -73,38 +70,23 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
           }
         },
         builder: (context, state) {
-          final bool isButtonEnabled = state.isValid;
-
           return MainWrapper(
             childWidget: Stack(
               children: [
                 AddLectureScreenItem(
-                  choose_stage: (compoundName, index) {
-                    context.read<AddLectureBloc>().add(
-                      ChooseSectionEvent(compoundName, index),
-                    );
-                  },
-                  isValid: isButtonEnabled,
+
                   context: (lecture) {
                     context.read<AddLectureBloc>().add(
                       AddLecturePressed(lecture),
                     );
                   },
                   urlCtrl: urlCtrl,
-                  stage: context.read<AddLectureBloc>().currentStage.toString(),
-                  codeCtrl: codeCtrl,
+
+                  duration: duration,
+                  pricing: priceCtrl,
                   descCtrl: descCtrl,
                   nameCtrl: nameCtrl,
-                  onFormChanged: () {
-                    context.read<AddLectureBloc>().add(
-                      AddLectureFormChanged(
-                        name: nameCtrl.text,
-                        description: descCtrl.text,
-                        videoUrl: urlCtrl.text,
-                        stage: context.read<AddLectureBloc>().currentStage,
-                      ),
-                    );
-                  },
+
                   key: addLectureItemKey,
 
                   isPlayList: widget.isPlayList,

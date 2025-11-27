@@ -1,3 +1,4 @@
+import 'package:amr_rezk_education/features/lectures/domain/use_cases/get_all_play_lists.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,4 +18,5 @@ void lecturesDI(GetIt getIt) {
   );
 
   getIt.registerLazySingleton(() => GetLecturesUseCase(repo: getIt()));
+  getIt.registerLazySingleton(() => GetPlaylistsUseCase( getIt()));
 }

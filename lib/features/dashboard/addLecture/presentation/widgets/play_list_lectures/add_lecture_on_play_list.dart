@@ -30,7 +30,13 @@ class _AddLectureScreenState extends State<AddLectureScreenOnPlayList> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        title: const Text("Add Lecture"),
+        title: const Text("Add Lecture", style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
         backgroundColor: AppColors.primaryColor,
       ),
       body: Form(
@@ -54,7 +60,7 @@ class _AddLectureScreenState extends State<AddLectureScreenOnPlayList> {
               const SizedBox(height: 16),
               admin_field("Video URL", _url, validator: Validators.validUrl),
               const SizedBox(height: 16),
-              admin_field("Duration", _time, validator: Validators.requiredField),
+              admin_field("Duration", _time, validator: Validators.numberField),
               const SizedBox(height: 30),
               _saveBtn(context),
             ],
@@ -72,25 +78,25 @@ class _AddLectureScreenState extends State<AddLectureScreenOnPlayList> {
         buttonName: "Save Lecture",
         isDisable: false,
         onPressed: () {
-      if (_formKey.currentState!.validate()&& context.read<PlaylistBloc>().currentStage!='المرحلة الدراسية'
-      ) {
-        final lecture = LectureModel(
-          id: DateTime.now().millisecondsSinceEpoch
-              .toString() ,
-          name: _name.text.trim(),
-          description: _desc.text.trim(),
-          videoUrl: _url.text.trim(),
-          duration: _time.text.trim().toString(),
-          stage: context
-              .read<PlaylistBloc>()
-              .currentStage,
-          isPlayList: widget.isPlayList,
-        );
+          if (_formKey.currentState!.validate() &&
+              context.read<PlaylistBloc>().currentStage != 'المرحلة الدراسية') {
+            final lecture = LectureModel(
+              price: "",
 
-        context.read<PlaylistBloc>().add(AddLocalLectureEvent(lecture));
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              name: _name.text.trim(),
+              description: _desc.text.trim(),
+              videoUrl: _url.text.trim(),
+              duration: _time.text.trim().toString(),
+              stage: context.read<PlaylistBloc>().currentStage,
+              isPlayList: widget.isPlayList,
+            );
 
-        Navigator.pop(context, true);
-      }},
+            context.read<PlaylistBloc>().add(AddLocalLectureEvent(lecture));
+
+            Navigator.pop(context, true);
+          }
+        },
       ),
     );
   }

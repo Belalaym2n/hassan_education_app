@@ -88,11 +88,17 @@ class _AnimatedStageCardState extends State<AnimatedStageCard>
       onVisibilityChanged: _onVisibilityChanged,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-        padding: const EdgeInsets.all(8),
+        margin: EdgeInsets.symmetric(
+          horizontal: AppConstants.w * 0.0222, // 8 / 360
+          vertical: AppConstants.h * 0.01578, // 12 / 760
+        ),
+        padding: EdgeInsets.all(AppConstants.w * 0.0222),
+        // 8 / 360
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(
+            AppConstants.w * 0.0555, // 20 / 360
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -103,51 +109,64 @@ class _AnimatedStageCardState extends State<AnimatedStageCard>
         ),
         child: InkWell(
           onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(
+            AppConstants.w * 0.0555, // 20 / 360
+          ),
           child: SizedBox(
             width: AppConstants.w * 0.6,
             height: AppConstants.h * 0.4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FadeTransition(
-                  opacity: _fadeImage,
-                  child: SlideTransition(
-                    position: _slideImage,
-                    child: _StageImage(imagePath: widget.stage.imagePath),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FadeTransition(
+                    opacity: _fadeImage,
+                    child: SlideTransition(
+                      position: _slideImage,
+                      child: _StageImage(imagePath: widget.stage.imagePath),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                FadeTransition(
-                  opacity: _fadeText,
-                  child: SlideTransition(
-                    position: _slideText,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _StageHeader(
-                            title: widget.stage.title,
-                            icon: widget.stage.icon,
-                          ),
-                          const SizedBox(height: 8),
-                          _StageDescription(text: widget.stage.description),
-                          const SizedBox(height: 10),
-                          const _StartNowButton(),
-                        ],
+
+                  SizedBox(height: AppConstants.h * 0.01578), // 12 / 760
+
+                  FadeTransition(
+                    opacity: _fadeText,
+                    child: SlideTransition(
+                      position: _slideText,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppConstants.w * 0.0444, // 16 / 360
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _StageHeader(
+                              title: widget.stage.title,
+                              icon: widget.stage.icon,
+                            ),
+
+                            SizedBox(height: AppConstants.h * 0.01052),
+                            // 8 / 760
+
+                            _StageDescription(text: widget.stage.description),
+
+                            SizedBox(height: AppConstants.h * 0.01316),
+                            // 10 / 760
+
+                            const _StartNowButton(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
-  }
-}
+  }}
 
 // --------------------- SUB-WIDGETS ---------------------
 
@@ -180,13 +199,19 @@ class _StageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.primaryColor, size: 22),
-        const SizedBox(width: 8),
+        Icon(
+          icon,
+          color: AppColors.primaryColor,
+          size: AppConstants.w * 0.0611, // 22 / 360
+        ),
+
+        SizedBox(width: AppConstants.w * 0.0222), // 8 / 360
+
         Expanded(
           child: Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: AppConstants.w * 0.044, // 16 / 360
               height: 1.2,
               fontWeight: FontWeight.bold,
               color: AppColors.primaryColor,
@@ -195,6 +220,7 @@ class _StageHeader extends StatelessWidget {
         ),
       ],
     );
+
   }
 }
 
@@ -207,12 +233,13 @@ class _StageDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 10,
+      style: TextStyle(
+        fontSize: AppConstants.w * 0.0277, // 10 / 360
         color: Color(0xFF555555),
         height: 1.6,
       ),
     );
+
   }
 }
 
@@ -228,18 +255,30 @@ class _StartNowButton extends StatelessWidget {
           backgroundColor: AppColors.primaryColor,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(
+              AppConstants.w * 0.0333, // 12 / 360
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppConstants.w * 0.0333, // 12 / 360
+            vertical: AppConstants.h * 0.00263, // 2 / 760
+          ),
           elevation: 0,
         ),
         onPressed: () {},
-        icon: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-        label: const Text(
+        icon: Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: AppConstants.w * 0.0444, // 16 / 360
+        ),
+        label: Text(
           "ابدأ الآن",
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: AppConstants.w * 0.0277, // 10 / 360
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
+
   }
 }

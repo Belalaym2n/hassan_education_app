@@ -8,27 +8,30 @@ class LectureModel {
   final String name;
   final String description;
   final String videoUrl;
+  final String price;
   final String duration; // ممكن تكون "01:20" أو minutes
 
   final String stage; // المرحلة الدراسية
-    bool isPlayList;
-   final Timestamp createdAt;
+  bool isPlayList;
+  final Timestamp createdAt; // ← خليه Timestamp
 
   LectureModel({
     required this.id,
+    required this.price,
     required this.name,
     required this.description,
     required this.videoUrl,
     required this.stage,
     required this.duration,
     required this.isPlayList,
-     Timestamp? createdAt,
+    Timestamp? createdAt,
   }) : createdAt = createdAt ?? Timestamp.now();
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'price': price,
       'description': description,
       'videoUrl': videoUrl,
       'duration': duration,
@@ -43,13 +46,14 @@ class LectureModel {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       description: json['description'] ?? '',
+      price: json['price'] is int ? json['price'] : 0,
       videoUrl: json['videoUrl'] ?? '',
       duration: json['duration'] ?? '',
       stage: json['stage'] ?? '',
       isPlayList: json['isPlayList'] ?? false,
-      createdAt: json['createdAt'] != null
-          ? Timestamp.fromMillisecondsSinceEpoch(json['createdAt'])
-          : Timestamp.now(),
+      createdAt: json['createdAt'] is Timestamp
+          ? json['createdAt']
+          : Timestamp.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
     );
   }
 

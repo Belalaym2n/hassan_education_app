@@ -15,4 +15,7 @@ class GetLecturesUseCase {
       return Result.failure(result.error);
     }
   }
+
+
+
 }

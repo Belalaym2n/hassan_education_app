@@ -134,11 +134,15 @@ class _LectureNameItemState extends State<LectureNameItem> {
             children: [
               const Icon(Icons.timer_outlined, size: 18, color: Colors.black54),
               const SizedBox(width: 6),
-              Text(
-                widget.time,
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  widget.time,
+
+                  style: TextStyle(
+                    overflow: TextOverflow.ellipsis ,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],

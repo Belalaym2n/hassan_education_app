@@ -16,6 +16,8 @@ class UserNotificationRemoteDSImpl implements UserNotificationRemoteDS {
   @override
   Future<Result<List<NotificationModel>>> getUserNotifications() async {
     try {
+
+
       final response = await http.get(
         Uri.parse(
           "https://onesignal.com/api/v1/notifications?app_id=${AppConstants.oneSignalAppId}",
@@ -26,6 +28,7 @@ class UserNotificationRemoteDSImpl implements UserNotificationRemoteDS {
         },
       );
       if (response.statusCode != 200) {
+        print("error ${response.statusCode}");
         return Result.failure("Something went wrong !, please try again");
       }
 
@@ -38,13 +41,11 @@ class UserNotificationRemoteDSImpl implements UserNotificationRemoteDS {
 
       return Result.success(notifications);
     } catch (e) {
-      print("error ${e.toString()}");
+      print("error 7sl ${e.toString()}");
       final exception = ExceptionHandler.handle(e);
-      print("exception ${exception.message}");
+      print("exception 7sl  ${exception.message}");
       final failure = ExceptionHandler.exceptionToFailure(exception);
       return Result.failure(failure.message.toString());
     }
   }
-
 }
-

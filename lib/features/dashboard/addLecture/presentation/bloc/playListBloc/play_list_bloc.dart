@@ -14,7 +14,8 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
   final UploadLecturesUseCase uploadLecturesUseCase;
   String currentStage = 'المرحلة الدراسية';
   int index = -1;
-List<LectureModel>lectures=[];
+  List<LectureModel> lectures = [];
+
   PlaylistBloc({
     required this.addLectureUseCase,
     required this.getLocalLecturesUseCase,
@@ -29,8 +30,6 @@ List<LectureModel>lectures=[];
     on<RemoveLocalLectureEvent>(_onRemoveLocal);
     on<UploadLecturesEvent>(_onUpload);
   }
-
-
 
   void _chooseSection(ChooseStageEvent event, Emitter<PlaylistState> emit) {
     currentStage = event.stageName;
@@ -47,7 +46,7 @@ List<LectureModel>lectures=[];
       final r = await getLocalLecturesUseCase.call();
       if (r.isSuccess) {
         final list = (r.data as List).cast<LectureModel>();
-        lectures=list;
+        lectures = list;
         emit(PlaylistLoaded(lectures: list));
         emit(PlaylistActionSuccess("Lecture saved locally"));
       } else {
@@ -56,24 +55,22 @@ List<LectureModel>lectures=[];
     } else {
       emit(PlaylistFailure(res.error.toString()));
     }
-
-
   }
+
   Future<void> _onLoadLocal(
-      LoadLocalLecturesEvent event,
-      Emitter<PlaylistState> emit,
-      ) async {
+    LoadLocalLecturesEvent event,
+    Emitter<PlaylistState> emit,
+  ) async {
     emit(PlaylistLoading());
     final res = await getLocalLecturesUseCase.call();
     if (res.isSuccess) {
       final list = (res.data as List).cast<LectureModel>();
-      lectures=list;
+      lectures = list;
       emit(PlaylistLoaded(lectures: list));
     } else {
       emit(PlaylistFailure(res.error.toString()));
     }
   }
-
 
   Future<void> _onRemoveLocal(
     RemoveLocalLectureEvent event,
@@ -85,9 +82,9 @@ List<LectureModel>lectures=[];
       final r = await getLocalLecturesUseCase.call();
       if (r.isSuccess) {
         final list = (r.data as List).cast<LectureModel>();
-        lectures=list;
+        lectures = list;
         emit(PlaylistLoaded(lectures: list));
-       } else {
+      } else {
         emit(PlaylistFailure(r.error.toString()));
       }
     } else {
@@ -111,10 +108,14 @@ List<LectureModel>lectures=[];
       return;
     }
 
-    final res = await uploadLecturesUseCase.call(list, event.playlistId);
+    final res = await uploadLecturesUseCase.call(
+      model: event.playlist,
+      stage: currentStage,
+      list,
+      event.playlist.id,
+    );
     if (res.isSuccess) {
-      // after upload, local cleared inside repo
-      emit(PlaylistLoaded(lectures: []));
+       emit(PlaylistLoaded(lectures: []));
       emit(PlaylistActionSuccess("Uploaded lectures successfully"));
     } else {
       emit(PlaylistFailure(res.error.toString()));

@@ -7,7 +7,7 @@ import '../../domain/use_cases/signUpCall.dart';
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final SignUpUseCase signUpUseCase;
 
-  String sectionName = "Choose Section";
+  String sectionName = "اختر المرحلة";
   int index = -1;
   String currentEmail = "";
   String currentPassword = "";
@@ -21,10 +21,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       sectionName = event.sectionName;
       index = event.index;
 
-      // نرجع state لل UI
       emit(SectionSelectedState(sectionName: sectionName, index: index));
-
-      // 🔥 نعمل Validation من جديد
       final isValid = _validateForm(
         email: currentEmail, // هنعرفهم تحت
         password: currentPassword,
@@ -37,19 +34,16 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   Future<void> _onSignUpButtonPressed(
-      SignUpButtonPressed event,
-      Emitter<SignUpState> emit,
-      ) async {
+    SignUpButtonPressed event,
+    Emitter<SignUpState> emit,
+  ) async {
     emit(SignUpLoading());
     final result = await signUpUseCase(user: event.user);
 
     if (result.isSuccess) {
       emit(SignUpSuccess());
-        sectionName = "Choose Section";
-
+      sectionName = "اختر المرحلة";
     } else {
-
-
       emit(SignUpFailure(result.error.toString()));
     }
 
@@ -88,8 +82,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return AuthValidator.validateEmail(email) == null &&
         AuthValidator.validatePassword(password) == null &&
         AuthValidator.validateField(name) == null &&
-        sectionName != "Choose Section" &&
+        sectionName != "اختر المرحلة" &&
         AuthValidator.validatePhone(phone) == null;
   }
-
 }

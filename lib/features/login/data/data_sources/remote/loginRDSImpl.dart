@@ -56,9 +56,11 @@ class LoginRDSImpl implements LoginRDS {
 
   @override
   Future<Result> getUserData(String userId) async {
-     try {
+    final collectionName=AppConfiguration.userCollectionName;
+
+    try {
       final ownersCollection = FirebaseManager.getCollection<UserModel>(
-        collectionName: "Users",
+        collectionName: collectionName,
         fromJson: (json) => UserModel.fromJson(json),
         toJson: (model) => model.toJson(),
       );
@@ -83,7 +85,7 @@ class LoginRDSImpl implements LoginRDS {
   Future<Result> saveUserData(UserModel user) async {
     try {
       await SecureStorageHelper.write(AppKeys.userId, user.userID);
-
+      print("🔥 Firestore User Name = ${user.name}");
       await GetStorageHelper.write(AppKeys.name, user.name ?? "");
       await GetStorageHelper.write(AppKeys.email, user.gmail ?? "");
 
@@ -92,9 +94,10 @@ class LoginRDSImpl implements LoginRDS {
         user.phoneNumber ?? "",
       );
       await GetStorageHelper.write(
-        AppKeys.section,
+        AppKeys.stage,
         user.section ?? "",
       );
+      print("stage ${GetStorageHelper.read(AppKeys.name)}");
       return   Result.success("data has been saved");
     } catch (e) {
       final exception = ExceptionHandler.handle(e);

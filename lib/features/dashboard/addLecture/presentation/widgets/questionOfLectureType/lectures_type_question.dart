@@ -3,7 +3,7 @@ import 'package:amr_rezk_education/features/dashboard/addLecture/presentation/wi
 import 'package:flutter/material.dart';
 import '../../../../../../core/utils/app_colors.dart';
  import '../../pages/singleLecture/add_lecture_screen.dart';
-import '../optional_card.dart';
+import 'optional_card.dart';
 
 class LecturesTypeQuestion extends StatelessWidget {
   const LecturesTypeQuestion({super.key});
@@ -39,7 +39,8 @@ class LecturesTypeQuestion extends StatelessWidget {
                       subtitle: 'إضافة محاضرة واحدة مع جميع التفاصيل',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) =>   AddLectureScreen(
+                        MaterialPageRoute(builder: (_) =>
+                            AddLectureScreen(
                           isPlayList: false,
                         )),
                       ),
@@ -53,7 +54,8 @@ class LecturesTypeQuestion extends StatelessWidget {
                       subtitle: 'قائمة محاضرات لشهر كامل',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const AddPlaylistScreen()),
+                        MaterialPageRoute(builder: (_) =>
+                        const AddPlaylistScreen()),
                       ),                    ),
                   ],
                 ),

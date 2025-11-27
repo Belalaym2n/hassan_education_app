@@ -18,9 +18,9 @@ class LoginScreenItem extends StatefulWidget {
   State<LoginScreenItem> createState() => LoginScreenState();
 }
 
-class  LoginScreenState extends State<LoginScreenItem> {
+class LoginScreenState extends State<LoginScreenItem> {
   final _formKey = GlobalKey<FormState>();
-   final _emailController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
@@ -36,14 +36,12 @@ class  LoginScreenState extends State<LoginScreenItem> {
       LoginFormChanged(
         email: _emailController.text,
         password: _passwordController.text,
-
       ),
     );
   }
 
   @override
   void dispose() {
-
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -52,18 +50,18 @@ class  LoginScreenState extends State<LoginScreenItem> {
   void _onLoginPressed(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       final user = LoginModel(
-          email: _emailController.text.trim(),
+        email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
-       );
+      );
 
       context.read<LoginBloc>().add(LoginButtonPressed(model: user));
     }
   }
 
   bool isSecure = true;
+
   void clearForm() {
     _formKey.currentState?.reset(); // 🔥 تمسح كل الأخطاء
-
 
     _emailController.clear();
     _passwordController.clear();
@@ -71,63 +69,75 @@ class  LoginScreenState extends State<LoginScreenItem> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              final bool isButtonEnabled = state.isValid;
+          builder: (context, state) {
+            final bool isButtonEnabled = state.isValid;
 
-              return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Form(
-              key: _formKey,
-              child:Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: AppConstants.h * 0.08),
-              _headline(),
-              _description(),
-              SizedBox(height: AppConstants.h * 0.03),
-              CustomTextFormField(
-                controller: _emailController,
-                validator: AuthValidator.validateEmail,
-                label: "البريد الإلكتروني",
-                hint: "example@email.com",
-                prefixIcon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              CustomTextFormField(
-                controller: _passwordController,
-                validator: AuthValidator.validatePassword,
-                label: "كلمة المرور",
-                hint: "********",
-                prefixIcon: Icons.lock_outline_rounded,
-                isPassword: true,
-              ),
-              SizedBox(height: AppConstants.h * 0.02),
-              _forgotPasswordText(),
-              SizedBox(height: AppConstants.h * 0.2),
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: AppConstants.h * 0.08),
+                    _headline(),
+                    _description(),
+                    SizedBox(height: AppConstants.h * 0.03),
+                    Padding(
+                      padding:   EdgeInsets.all(AppConstants.w*0.06),
+                      child: Column(
+                        children: [
+                          CustomTextFormField(
+                            controller: _emailController,
+                            validator: AuthValidator.validateEmail,
+                            label: "البريد الإلكتروني",
+                            hint: "example@email.com",
+                            prefixIcon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: AppConstants.h * 0.02),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10.0,
+                          CustomTextFormField(
+                            controller: _passwordController,
+                            validator: AuthValidator.validatePassword,
+                            label: "كلمة المرور",
+                            hint: "********",
+                            prefixIcon: Icons.lock_outline_rounded,
+                            isPassword: true,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: AppConstants.h * 0.02),
+                    _forgotPasswordText(),
+                    SizedBox(height: AppConstants.h * 0.2),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 10.0,
+                      ),
+                      child: large_button(
+                        buttonName: "تسجيل الدخول",
+                        isDisable: !isButtonEnabled,
+                        onPressed: isButtonEnabled
+                            ? () => _onLoginPressed(context)
+                            : null,
+                      ),
+                    ),
+                    _dontHaveAccountText(),
+                    SizedBox(height: AppConstants.h * 0.05),
+                  ],
                 ),
-                child: large_button(
-
-                  buttonName: "تسجيل الدخول",
-                  isDisable: !isButtonEnabled,
-                  onPressed: isButtonEnabled
-                      ? () => _onLoginPressed(context)
-                      : null,
-                ),
               ),
-              _dontHaveAccountText(),
-              SizedBox(height: AppConstants.h * 0.05),
-            ],
-          ),
-          ) );})
+            );
+          },
+        ),
       ),
     );
   }
@@ -164,7 +174,7 @@ class  LoginScreenState extends State<LoginScreenItem> {
       alignment: Alignment.centerRight,
       child: GestureDetector(
         onTap: () {
-          // انتقل إلى شاشة "نسيت كلمة المرور"
+          Navigator.pushNamed(context, AppRoutes.forgetPassword);
         },
         child: Text(
           "هل نسيت كلمة المرور؟",

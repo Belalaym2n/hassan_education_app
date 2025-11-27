@@ -1,7 +1,8 @@
 // features/playlist/presentation/bloc/playlist_events.dart
+import 'package:amr_rezk_education/features/lectures/data/models/play_list_model.dart';
 import 'package:equatable/equatable.dart';
 import '../../../data/models/lecture_model.dart';
-import '../add_lecture_events.dart';
+import '../lectureBloc/add_lecture_events.dart';
 
 abstract class PlaylistEvent extends Equatable {
   @override
@@ -38,10 +39,10 @@ class RemoveLocalLectureEvent extends PlaylistEvent {
 }
 
 class UploadLecturesEvent extends PlaylistEvent {
-  final String playlistId;
+   final PlaylistModel playlist ;
 
-  UploadLecturesEvent(this.playlistId);
+  UploadLecturesEvent(this.playlist);
 
   @override
-  List<Object?> get props => [playlistId];
+  List<Object?> get props => [playlist];
 }

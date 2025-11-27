@@ -1,5 +1,7 @@
+import 'package:amr_rezk_education/config/routes/app_router.dart';
 import 'package:amr_rezk_education/core/sharedWidgets/buttons.dart';
 import 'package:amr_rezk_education/core/sharedWidgets/custom_loading.dart';
+import 'package:amr_rezk_education/features/lectures/data/models/play_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,22 +14,23 @@ import '../../bloc/playListBloc/play_list_events.dart';
 import '../../bloc/playListBloc/play_list_states.dart';
 import '../../widgets/play_list_lectures/add_lecture_on_play_list.dart';
 import '../../widgets/play_list_lectures/lectures_item.dart';
+import '../../widgets/questionOfLectureType/lectures_type_question.dart';
 
 class PlaylistScreen extends StatelessWidget {
-  final String playlistId;
+  final PlaylistModel playlistModel;
 
-  const PlaylistScreen({super.key, required this.playlistId});
+  const PlaylistScreen({super.key, required this.playlistModel});
 
   @override
   Widget build(BuildContext context) {
-    return _PlaylistView(playlistId: playlistId);
+    return _PlaylistView(playlistModel: playlistModel);
   }
 }
 
 class _PlaylistView extends StatefulWidget {
-  final String playlistId;
+  final PlaylistModel playlistModel;
 
-  const _PlaylistView({required this.playlistId});
+  const _PlaylistView({required this.playlistModel});
 
   @override
   State<_PlaylistView> createState() => _PlaylistViewState();
@@ -58,7 +61,8 @@ class _PlaylistViewState extends State<_PlaylistView> {
           builder: (context, state) {
             if (state is PlaylistLoaded) {
               return Stack(
-                children: [LecturesOnPlayListItem(lectures: state.lectures)],
+                children: [LecturesOnPlayListItem(lectures:
+                state.lectures)],
               );
             }
             if (state is PlaylistLoading) {
@@ -69,6 +73,15 @@ class _PlaylistViewState extends State<_PlaylistView> {
                   CustomLoadingWidget(),
                 ],
               );
+            } else if (state is PlaylistActionSuccess) {
+              Future.delayed(Duration(seconds: 1), () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.lectures,
+                  (route) => false,
+                );
+              });
+              return SizedBox();
             } else {
               return LecturesOnPlayListItem(lectures: []);
             }
@@ -95,8 +108,7 @@ class _PlaylistViewState extends State<_PlaylistView> {
                 text: "upload lectures",
                 onTap: () {
                   context.read<PlaylistBloc>().add(
-                    UploadLecturesEvent(DateTime.now().millisecondsSinceEpoch
-                        .toString()),
+                    UploadLecturesEvent(widget.playlistModel),
                   );
                 },
               ),

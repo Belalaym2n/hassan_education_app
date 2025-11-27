@@ -2,6 +2,7 @@ import 'package:amr_rezk_education/core/utils/app_colors.dart';
 import 'package:amr_rezk_education/core/utils/app_constants.dart';
 import 'package:amr_rezk_education/core/utils/app_images.dart';
 import 'package:amr_rezk_education/features/dashboard/addLecture/data/models/lecture_model.dart';
+import 'package:amr_rezk_education/features/lectures/data/models/play_list_model.dart';
 import 'package:amr_rezk_education/features/lectures/presentation/widgets/lecture/video_lecture.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -10,9 +11,18 @@ import '../../pages/month_content_screen.dart';
 import '../lecture/lecture_screen_item.dart';
 
 class CourseItem extends StatefulWidget {
-  CourseItem({super.key, required this.lectureModel});
+  CourseItem({
+    super.key,
+    required this.navigator,
+    this.playListModel,
+    this.lectureModel,
+    required this.isPlayList,
+  });
 
-  LectureModel lectureModel;
+  final LectureModel? lectureModel;
+  final PlaylistModel? playListModel;
+  final bool isPlayList;
+  final Function navigator;
 
   @override
   State<CourseItem> createState() => _CourseItemState();
@@ -88,7 +98,11 @@ class _CourseItemState extends State<CourseItem> {
   }
 
   Widget _buildImageWithPlayIcon() {
-    final thumbnailUrl = getYoutubeThumbnail(widget.lectureModel.videoUrl);
+    final thumbnailUrl = getYoutubeThumbnail(
+      !widget.isPlayList
+          ? (widget.lectureModel?.videoUrl ?? "")
+          : (widget.playListModel?.playListFirstVideo ?? ""),
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -102,30 +116,23 @@ class _CourseItemState extends State<CourseItem> {
           Image.network(
             thumbnailUrl,
             width: AppConstants.w * 0.87,
-            height: AppConstants.h * 0.18,
+            height: AppConstants.w * 0.49,
             fit: BoxFit.fitWidth,
             errorBuilder: (_, __, ___) {
-              return Image.asset(
-                AppImages.courseImage,
-                width: AppConstants.w * 0.84,
-                height: AppConstants.h * 0.18,
-                fit: BoxFit.fitWidth,
-              );
+              return Icon(Icons.error);
             },
           ),
 
           // طبقة شفافة
           Container(
             width: double.infinity,
-            height: AppConstants.h * 0.18,
+            height: AppConstants.w * 0.49,
             color: AppColors.primaryColor.withOpacity(0.35),
           ),
 
           // زر Play
           InkWell(
-            onTap: () {
-              print("Open Video: ${widget.lectureModel.videoUrl}");
-            },
+            onTap: () {},
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
@@ -146,7 +153,10 @@ class _CourseItemState extends State<CourseItem> {
 
   Widget _buildHeadline() {
     return Text(
-      widget.lectureModel.name,
+     ! widget.isPlayList
+          ? (widget.lectureModel?.name ?? "بدون عنوان")
+          : (widget.playListModel?.name ?? "بدون عنوان"),
+
       textAlign: TextAlign.end,
       style: TextStyle(
         fontWeight: FontWeight.w900,
@@ -158,7 +168,9 @@ class _CourseItemState extends State<CourseItem> {
 
   Widget _buildDescription() {
     return Text(
-      widget.lectureModel.description,
+      ! widget.isPlayList
+          ? widget.lectureModel?.description ?? "بدون وصف "
+          : widget.playListModel?.description ?? "بدون وصف ",
       textAlign: TextAlign.end,
       style: TextStyle(
         fontSize: AppConstants.w * 0.037,
@@ -178,7 +190,9 @@ class _CourseItemState extends State<CourseItem> {
 
   Widget _buildPriceText() {
     return Text(
-      "224 EGP",
+      ! widget.isPlayList
+          ? (widget.lectureModel?.price.toString() ?? "0")
+          : (widget.playListModel?.price.toString() ?? "0"),
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: AppConstants.w * 0.05,
@@ -186,7 +200,6 @@ class _CourseItemState extends State<CourseItem> {
       ),
     );
   }
-
 
   Widget _buildButton() {
     return ElevatedButton(
@@ -203,17 +216,8 @@ class _CourseItemState extends State<CourseItem> {
         elevation: 0,
       ),
       onPressed: () {
-
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => LectureScreenItem(lectureModel: widget.lectureModel),
-            ),
-          );
-        },
-
-
+        widget.navigator();
+      },
 
       child: Text(
         "ابدأ الآن",

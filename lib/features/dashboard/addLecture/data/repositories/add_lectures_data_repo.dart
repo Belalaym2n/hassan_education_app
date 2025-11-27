@@ -1,5 +1,5 @@
 
-import 'package:amr_rezk_education/features/dashboard/addLecture/data/data_sources/remote/add_lecture_ds.dart';
+import 'package:amr_rezk_education/features/dashboard/addLecture/data/data_sources/remote/singleLecture/add_lecture_ds.dart';
 
 import '../../../../../core/handleErrors/result_pattern.dart';
 import '../../domain/repositories/add_lecture_domain_repo.dart';

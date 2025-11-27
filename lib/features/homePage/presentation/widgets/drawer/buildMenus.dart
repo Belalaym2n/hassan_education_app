@@ -1,8 +1,12 @@
-import 'package:amr_rezk_education/features/homePage/presentation/widgets/header.dart';
+import 'package:amr_rezk_education/config/routes/app_router.dart';
+import 'package:amr_rezk_education/features/homePage/presentation/widgets/drawer/build_user_info.dart';
+import 'package:amr_rezk_education/features/homePage/presentation/widgets/homeHeader/header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../core/cahsing/get_storage_helper.dart';
+import '../../../../../core/cahsing/secure_storage.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_constants.dart';
 import '../../../../../core/utils/app_images.dart';
@@ -27,57 +31,6 @@ class _BuildMenuScreenState extends State<BuildMenuScreen> {
     final h = MediaQuery.of(context).size.height;
 
     final List<MenuModel> pages = MenuModel.getItems(context);
-    amrText(double width, double height,
-
-        {bool isMobile = false,bool isDrawer=false}) {
-      return Text(
-      "Amr",
-        style:TextStyle(
-            fontSize: !isMobile ? width * 0.02 : width * 0.06,
-            fontWeight: FontWeight.bold,
-            color:  isDrawer?AppColors.primaryColor:Colors.white,
-            letterSpacing: 0.5,
-            height: 1
-        ),
-      );
-    }
-    Widget userInfo() {
-      return Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(0.0444 * w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(0.0444 * w),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 0.0277 * w,
-              offset: Offset(0, 0.00515 * h),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(AppConstants.w * 0.025),
-              decoration: BoxDecoration(
-                color: const Color(0xFFB2D9DB).withOpacity(0.25),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                CupertinoIcons.person_crop_square,
-                size: AppConstants.w * 0.07,
-                color: AppColors.primaryColor, // اللون الأساسي (برتقالي فاتح)
-              ),
-            ),
-
-            SizedBox(width: 0.0144 * w),
-            Center(child: amrText(w, h, isMobile: true, isDrawer: true)),
-          ],
-        ),
-      );
-    }
-
 
 
     return SafeArea(
@@ -90,7 +43,7 @@ class _BuildMenuScreenState extends State<BuildMenuScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              userInfo(),
+            BuildUserInfo(),
               SizedBox(height: 0.04123 * h),
               MenuItem(
                 isMobile: widget.isMobile,
@@ -165,6 +118,9 @@ class _BuildMenuScreenState extends State<BuildMenuScreen> {
                     ),
                   ),
                   onPressed: () async {
+                    GetStorageHelper.clear();
+                    SecureStorageHelper.clear();
+                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false,);
                     setState(() {
                       _selectedIndex = 5;
                     });
@@ -175,7 +131,6 @@ class _BuildMenuScreenState extends State<BuildMenuScreen> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),

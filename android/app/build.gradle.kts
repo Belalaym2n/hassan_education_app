@@ -9,6 +9,19 @@ plugins {
 }
 
 android {
+    flavorDimensions += "default"
+    productFlavors {
+        create("development") {
+            dimension = "default"
+            resValue("string", "app_name", "Hassna Development")
+
+         }
+        create("production") {
+            resValue("string", "app_name", "Hassna Production")
+
+            dimension = "default"
+         }
+    }
     namespace = "com.example.amr_rezk_education"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

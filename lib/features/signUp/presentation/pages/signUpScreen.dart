@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           } else if (state is SignUpSuccess) {
             Navigator.pop(context); // تغلق اللودينج
 
-            AppSnackBar.showSuccess(context, "Account created successfully");
+            AppSnackBar.showSuccess(context, "تم إنشاء حسابك… أهلاً بك معنا!");
             await Future.delayed(Duration(milliseconds: 2000), () {
               Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login,(route) =>false ,);
             });

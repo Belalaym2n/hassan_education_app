@@ -1,10 +1,11 @@
-
 import 'package:amr_rezk_education/core/utils/app_constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
+import '../../../../core/utils/app_colors.dart';
 import '../widgets/drawer/mobile_tablet_with_drawer.dart';
-import '../widgets/home_item.dart';
+import '../widgets/itemPage/home_item.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -15,18 +16,20 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  
+  }
+  @override
   Widget build(BuildContext context) {
     final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
-
     return MobileTabletScreen(
-
       h: AppConstants.h,
       w: AppConstants.w,
       zoomDrawerController: zoomDrawerController,
-      mainScreen:HomeItem(
-        zoomDrawerController: zoomDrawerController,
-      ) ,
+      mainScreen: HomeItem(zoomDrawerController: zoomDrawerController),
       isMobile: true,
-    )   ;
+    );
   }
 }

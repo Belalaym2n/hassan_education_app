@@ -8,27 +8,28 @@ class AuthValidator {
     bool isValidGmail = isValidEmail(value ?? "");
 
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return 'البريد الإلكتروني مطلوب';
     }
     if (isValidGmail == false) {
-      return 'Invalid email format';
+      return 'صيغة البريد الإلكتروني غير صحيحة';
     }
     return null;
   }
 
   static String? validatePassword(String? value) {
     if (value == null || value.length < 6) {
-      return 'Password must be at least 6 characters';
+      return 'يجب أن تكون كلمة المرور 6 أحرف على الأقل';
     }
     return null;
   }
 
   static String? validateField(String? value) {
-    if (value == null ||  value.trim().isEmpty) {
-      return 'this field must be at not empty';
+    if (value == null || value.trim().isEmpty) {
+      return 'هذا الحقل لا يجب أن يكون فارغًا';
     }
     return null;
   }
+
   static bool isValidPhone(String phone) {
     final regex = RegExp(r'^(?:\+?\d{1,3})?\d{10,15}$');
     return regex.hasMatch(phone);
@@ -36,14 +37,13 @@ class AuthValidator {
 
   static String? validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
+      return 'رقم الهاتف مطلوب';
     }
 
     if (!isValidPhone(value.trim())) {
-      return 'Invalid phone number';
+      return 'رقم الهاتف غير صحيح';
     }
 
     return null;
-
-}
+  }
 }

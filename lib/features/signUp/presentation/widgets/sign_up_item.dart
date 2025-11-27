@@ -102,41 +102,51 @@ class SignUpItemState extends State<SignUpItem> {
                     _headline(),
                     _description(),
                     SizedBox(height: AppConstants.h * 0.02),
-                    CustomTextFormField(
-                      controller: _nameController,
-                      label: "الاسم الكامل",
-                      hint: "أدخل اسمك الكامل",
-                      prefixIcon: Icons.person_outline,
-                      validator: AuthValidator.validateField,
-                    ),
-                    CustomTextFormField(
-                      controller: _phoneController,
-                      label: "رقم الهاتف",
-                      keyboardType: TextInputType.phone,
-                      hint: "أدخل رقم هاتفك",
-                      prefixIcon: Icons.phone_outlined,
-                      validator: AuthValidator.validatePhone,
-                    ),
+                    Padding(
+                      padding:   EdgeInsets.symmetric(
+                        vertical: AppConstants.h*0.03,
+                          horizontal:
+                          AppConstants.w*0.06),
+                      child: Column(
+                        children: [
+                          CustomTextFormField(
+                            controller: _nameController,
+                            label: "الاسم الكامل",
+                            hint: "أدخل اسمك الكامل",
+                            prefixIcon: Icons.person_outline,
+                            validator: AuthValidator.validateField,
+                          ),
+                          CustomTextFormField(
+                            controller: _phoneController,
+                            label: "رقم الهاتف",
+                            keyboardType: TextInputType.phone,
+                            hint: "أدخل رقم هاتفك",
+                            prefixIcon: Icons.phone_outlined,
+                            validator: AuthValidator.validatePhone,
+                          ),
 
-                    CustomTextFormField(
-                      controller: _emailController,
-                      label: "البريد الإلكتروني",
-                      hint: "example@email.com",
-                      prefixIcon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: AuthValidator.validateEmail,
-                    ),
+                          CustomTextFormField(
+                            controller: _emailController,
+                            label: "البريد الإلكتروني",
+                            hint: "example@email.com",
+                            prefixIcon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: AuthValidator.validateEmail,
+                          ),
 
-                    CustomTextFormField(
-                      controller: _passwordController,
-                      label: "كلمة المرور",
-                      hint: "********",
-                      prefixIcon: Icons.lock_outline_rounded,
-                      isPassword: true,
-                      validator: AuthValidator.validatePassword,
-                    ),
-                    SizedBox(height: AppConstants.h * 0.01),
-                    SelectedSection(
+                          CustomTextFormField(
+                            controller: _passwordController,
+                            label: "كلمة المرور",
+                            hint: "********",
+                            prefixIcon: Icons.lock_outline_rounded,
+                            isPassword: true,
+                            validator: AuthValidator.validatePassword,
+                          ),
+                        ],
+                      ),
+                    )
+                  ,
+                     SelectedSection(
                       items: StaticList.sections,
 
                       index: context.watch<SignUpBloc>().index,
@@ -158,7 +168,7 @@ class SignUpItemState extends State<SignUpItem> {
                       ),
                       child: large_button(
                         buttonName: "تسجيل الآن",
-                        isDisable: !isButtonEnabled,
+                        isDisable: false ,
                         onPressed: isButtonEnabled
                             ? () => _onSignUpPressed(context)
                             : null,

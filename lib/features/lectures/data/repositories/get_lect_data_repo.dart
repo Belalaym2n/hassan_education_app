@@ -11,4 +11,15 @@ class GetLecturesDataRepo implements GetLecturesDomainRepo {
   Future<Result> getLectures() {
     return getLecturesDS.getLectures();
   }
+
+  @override
+  Future<Result> getAllPlaylists() {
+    return getLecturesDS.getPlayLists();
+  }
+
+  @override
+  Future<Result> getLecturesOnPlayList(String playListID) {
+    // TODO: implement getLecturesOnPlayList
+    return getLecturesDS.getLecturesOnPlaylist(playListID);
+  }
 }

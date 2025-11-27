@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
+import '../../../../../core/utils/app_colors.dart';
 import 'buildMenus.dart';
 
 class MobileTabletScreen extends StatefulWidget {
@@ -31,11 +33,18 @@ class _MobileTabletScreenState extends State<MobileTabletScreen> {
   bool isMobile(double width) => width < 600;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ZoomDrawer(
+
       controller: widget.zoomDrawerController,
       menuBackgroundColor: isDark ? colorScheme.surface : Colors.white,
       shadowLayer1Color: isDark

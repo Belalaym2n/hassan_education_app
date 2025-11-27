@@ -1,10 +1,12 @@
 // features/playlist/domain/use_cases/playlist_usecases.dart
 import '../../../../../core/handleErrors/result_pattern.dart';
- import '../repositories/add_play_list_domain_repo.dart';
- import '../../data/models/lecture_model.dart';
+import '../../../../lectures/data/models/play_list_model.dart';
+import '../repositories/add_play_list_domain_repo.dart';
+import '../../data/models/lecture_model.dart';
 
 class AddLectureUseCase {
   final PlaylistDomainRepo repo;
+
   AddLectureUseCase({required this.repo});
 
   Future<Result> call(LectureModel lecture) async {
@@ -14,6 +16,7 @@ class AddLectureUseCase {
 
 class GetLocalLecturesUseCase {
   final PlaylistDomainRepo repo;
+
   GetLocalLecturesUseCase({required this.repo});
 
   Future<Result> call() async {
@@ -23,6 +26,7 @@ class GetLocalLecturesUseCase {
 
 class RemoveLocalLectureUseCase {
   final PlaylistDomainRepo repo;
+
   RemoveLocalLectureUseCase({required this.repo});
 
   Future<Result> call(String id) async {
@@ -32,9 +36,21 @@ class RemoveLocalLectureUseCase {
 
 class UploadLecturesUseCase {
   final PlaylistDomainRepo repo;
+
   UploadLecturesUseCase({required this.repo});
 
-  Future<Result> call(List<LectureModel> lectures, String playlistId) async {
-    return await repo.uploadLectures(lectures, playlistId);
+  Future<Result> call(
+    List<LectureModel> lectures,
+    String playlistId, {
+    required String stage,
+    required PlaylistModel model,
+  }) async {
+    return await repo.uploadLectures(
+      stage: stage,
+      model: model,
+
+      lectures,
+      playlistId,
+    );
   }
 }

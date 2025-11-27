@@ -1,4 +1,3 @@
-
 import 'package:amr_rezk_education/features/homePage/presentation/pages/home_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +6,8 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../core/utils/app_colors.dart';
 import '../homePage/presentation/widgets/underDev.dart';
- import '../lectures/presentation/pages/coursesScreen.dart';
+import '../lectures/presentation/pages/tabs_selcected_screen.dart';
 import '../lectures/presentation/widgets/courses/courses_screen_item.dart';
-
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -24,55 +22,64 @@ class _BottomNavState extends State<BottomNav> {
     // TODO: implement initState
     super.initState();
     OneSignal.Notifications.requestPermission(true);
-
   }
-  int currentIndex=0;
-  List<Widget>pages=[
+
+  int currentIndex = 0;
+  List<Widget> pages = [
     HomePageScreen(),
 
-    CoursesScreen(),
+    FemaComingSoonPage(),
+    FemaComingSoonPage(),
     FemaComingSoonPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return SafeArea(
       child: Scaffold(
-            bottomNavigationBar: CurvedNavigationBar(
-                height: 50,
-                backgroundColor: Colors.transparent,
-                color: AppColors.primaryColor,
-                animationDuration: const Duration(milliseconds: 500),
-                onTap: (int index) {
-                  setState(() {
-                    currentIndex=index;
-                  });
-                  // viewModel.updateIndex(index);
-                },
-                items: const [
-                  Icon(
-                    Icons.home_outlined,
-                    color: Colors.white,
-                  ),
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 50,
+          backgroundColor: Colors.transparent,
+          color: AppColors.primaryColor,
 
-                  Icon(
-                  FontAwesomeIcons.chalkboardTeacher,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    FontAwesomeIcons.percent,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    Icons.notifications_active,
-                    color: Colors.white,
-                  ),
-                ]),
-            body:  pages[currentIndex]
+          animationDuration: const Duration(milliseconds: 500),
 
+          onTap: (int index) {
+            setState(() {
+              currentIndex = index;
+            });
+            // viewModel.updateIndex(index);
+          },
+          items: [
+            Icon(
+              Icons.home_outlined,
+              color: currentIndex == 0
+                  ? AppColors.secondaryColor
+                  : Colors.white,
+            ),
 
+            Icon(
+              FontAwesomeIcons.chalkboardTeacher,
+              color: currentIndex == 1
+                  ? AppColors.secondaryColor
+                  : Colors.white,
+            ),
+            Icon(
+              FontAwesomeIcons.percent,
+              color: currentIndex == 2
+                  ? AppColors.secondaryColor
+                  : Colors.white,
+            ),
+            Icon(
+              Icons.notifications_active,
+              color: currentIndex == 3
+                  ? AppColors.secondaryColor
+                  : Colors.white,
+            ),
+          ],
+        ),
+        body: pages[currentIndex],
       ),
     );
   }
 }
-

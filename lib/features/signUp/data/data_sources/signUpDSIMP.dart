@@ -1,3 +1,4 @@
+import 'package:amr_rezk_education/config/configeration/app_configeration.dart';
 import 'package:amr_rezk_education/features/signUp/data/data_sources/signUpDS.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,9 +56,12 @@ class SignUpDSImp implements SignUpDS {
 
   @override
   Future<Result> uploadUserOnFirebaseDatabase(UserModel user) async {
+    final collectionName=AppConfiguration.userCollectionName;
     // TODO: implement uploadUserOnFirebaseDatabase
     try {
-      await firestore.collection("Users").doc(user.userID).set(user.toJson());
+      await
+
+      firestore.collection(collectionName).doc(user.userID).set(user.toJson());
 
       return Result.success("success");
     } catch (e) {

@@ -4,50 +4,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../../../../core/firebase/firebase_manager.dart';
 import '../../../../../../../core/handleErrors/exaption_handler.dart';
 import '../../../../../../../core/handleErrors/result_pattern.dart';
+import '../../../../../../lectures/data/models/play_list_model.dart';
 import '../../../models/lecture_model.dart';
 import 'add_playlist_ds.dart';
 
 class PlaylistDSImp implements PlaylistDS {
   final FirebaseFirestore firestore;
-  final String collectionName; // ex: "Playlists" or "Lectures"
 
-  PlaylistDSImp({required this.firestore, this.collectionName = "Playlists"});
-
-  @override
-  Future<Result> uploadLectureToFirestore(LectureModel lecture, String playlistId) async {
-    try {
-      final docId = DateTime.now().millisecondsSinceEpoch
-          .toString();
-
-
-      lecture.id=docId;
-      await FirebaseManager.uploadModel<LectureModel>(
-          collectionName: "Lectures",
-          model: lecture,
-          docId: docId,
-          toJson: (e) => e.toJson(),
-          fromJson: (json) => LectureModel.fromJson(json)
-      );
-      return Result.success("uploaded");
-    } catch (e) {
-      final exception = ExceptionHandler.handle(e);
-      final failure = ExceptionHandler.exceptionToFailure(exception);
-      return Result.failure(failure.message.toString());
-    }
-  }
-
+  PlaylistDSImp({required this.firestore});
 
   @override
-  Future<Result> uploadLecturesToFirestore(List<LectureModel> lectures, String playlistId) async {
+  Future<Result> uploadLecturesToFirestore(
+    List<LectureModel> lectures,
+    String playlistId, {
+    required String stage,
+    required PlaylistModel model,
+  }) async {
     final batch = firestore.batch();
+
     try {
-      final collRef = firestore.collection(collectionName).doc(playlistId).collection(playlistId);
+      final playlistRef = firestore
+          .collection("${stage}_Playlists")
+          .doc(model.id);
+      model.playListFirstVideo = lectures[0].videoUrl;
+
+      batch.set(playlistRef, model.toJson());
+
       for (var lecture in lectures) {
-        final docId = DateTime.now().millisecondsSinceEpoch
-            .toString();
-         final docRef = collRef.doc(docId);
+        final docId = DateTime.now().millisecondsSinceEpoch.toString();
+        final docRef = playlistRef.collection("Lectures").doc(docId);
+
         batch.set(docRef, lecture.toJson());
       }
+
       await batch.commit();
       return Result.success("uploaded_all");
     } catch (e) {

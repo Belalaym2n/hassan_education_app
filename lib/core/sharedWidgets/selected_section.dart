@@ -32,13 +32,17 @@ class _SelectItemInListState extends State<SelectedSection> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 400),
-      height: isExpanded ? AppConstants.h * 0.34 : AppConstants.h * 0.07,
-      width: widget.isDesktop ? AppConstants.w * 0.95 : AppConstants.w * 0.85,
+      height:widget.isDesktop&& !isExpanded?
+      AppConstants.h*0.09:
+      isExpanded ?
+      AppConstants.h * 0.4 : AppConstants.h * 0.07,
+      width: widget.isDesktop ? AppConstants.w * 0.95
+          : AppConstants.w * 0.9,
       decoration: BoxDecoration(
         color: Colors.white,
 
         border: Border.all(color: Colors.grey.shade300, width: 1.5),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
 
         boxShadow: [
           BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
@@ -50,8 +54,9 @@ class _SelectItemInListState extends State<SelectedSection> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if(isExpanded)
-              SizedBox(height: AppConstants.h * 0.01),
+
+              SizedBox(height:
+              AppConstants.h * 0.01),
               buildChooseItem(widget.itemName),
               AnimatedOpacity(
                 opacity: isExpanded ? 1.0 : 0.0,
@@ -59,7 +64,7 @@ class _SelectItemInListState extends State<SelectedSection> {
                 child: isExpanded
                     ? Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: AppConstants.w * 0.05,
+                          horizontal: AppConstants.w * 0.04,
                           vertical: AppConstants.h * 0.01,
                         ),
                         child: Column(
@@ -98,7 +103,7 @@ class _SelectItemInListState extends State<SelectedSection> {
             selectedCompanyName,
             style: TextStyle(
               fontSize: widget.isDesktop
-                  ? AppConstants.w * 0.015
+                  ? AppConstants.w * 0.012
                   : AppConstants.w * 0.045,
               color: AppColors.primaryColor,
               fontWeight: FontWeight.w600,

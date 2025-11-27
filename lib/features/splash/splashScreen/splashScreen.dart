@@ -1,6 +1,9 @@
+import 'package:amr_rezk_education/core/cahsing/get_storage_helper.dart';
+import 'package:amr_rezk_education/core/cahsing/secure_storage.dart';
 import 'package:amr_rezk_education/features/login/presentation/pages/auto_login_screen.dart';
 import 'package:amr_rezk_education/features/splash/onBoarding/onBoardScreens.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import '../../../config/routes/app_router.dart';
 import '../../../core/utils/app_constants.dart';
@@ -39,7 +42,9 @@ class _SplashScreenState extends State<SplashScreen>
     // 3️⃣ شاشة بيضاء بسيطة بعد الاختفاء
     setState(() => _showWhiteScreen = true);
     await Future.delayed(const Duration(milliseconds: 500));
-
+    //
+    // GetStorageHelper.clear();
+    // SecureStorageHelper.clear();
     // 4️⃣ الانتقال إلى شاشة OnBoarding
     if (mounted) {
       Navigator.of(context).pushReplacement(PageRouteBuilder(
@@ -72,6 +77,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: Center(
         child: _showWhiteScreen
             ? const SizedBox.shrink()

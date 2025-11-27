@@ -6,7 +6,7 @@ import 'package:amr_rezk_education/features/homePage/presentation/widgets/educat
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../../../core/sharedWidgets/sectionName.dart';
-import '../whyChooseAmr.dart';
+import '../whyChooseTeacher/whyChooseAmr.dart';
 
 class EducationalStages extends StatelessWidget {
   const EducationalStages({super.key});
@@ -16,7 +16,7 @@ class EducationalStages extends StatelessWidget {
     return
           Column(
             children: [
-              WhyChooseAmr(
+              WhyChooseTeacher(
                 name: 'مراحل التعليم',
               ),
               SizedBox(
@@ -28,9 +28,13 @@ class EducationalStages extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final stage = stages[index];
                     return Padding(
-                      padding: const EdgeInsets.only(left:  12,
-                      bottom: 12),
-                      child: AnimatedStageCard(stage: stage, index: index),
+                      padding: EdgeInsets.only(
+                        left: AppConstants.w * 0.0333,   // 12 / 360
+                        bottom: AppConstants.w * 0.0333, // 12 / 360
+                      ),
+
+
+                    child: AnimatedStageCard(stage: stage, index: index),
                     );
                   },
                 ),

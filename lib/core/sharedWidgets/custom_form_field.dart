@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:amr_rezk_education/core/utils/app_colors.dart';
 import 'package:amr_rezk_education/core/utils/app_constants.dart';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../utils/app_colors.dart';
+import '../utils/app_constants.dart';
+
 class CustomTextFormField extends StatefulWidget {
   final String label;
   final String hint;
@@ -26,128 +32,183 @@ class CustomTextFormField extends StatefulWidget {
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
 
-class _CustomTextFormFieldState extends State<CustomTextFormField> {
+class _CustomTextFormFieldState extends State<CustomTextFormField>
+    with SingleTickerProviderStateMixin {
   bool _isFocused = false;
   bool _obscure = true;
+
+  String? _errorText;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: AppConstants.w * 0.07,
-        vertical: AppConstants.h * 0.012,
+        horizontal: AppConstants.w * 0.0,
+        vertical: AppConstants.h * 0,
       ),
-      child: Focus(
-        onFocusChange: (focus) {
-          setState(() => _isFocused = focus);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _isFocused
-                  ? AppColors.primaryColor.withOpacity(0.8)
-                  : Colors.grey.shade300,
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: _isFocused
-                    ? AppColors.primaryColor.withOpacity(0.25)
-                    : Colors.black12,
-                blurRadius: _isFocused ? 18 : 6,
-                offset: Offset(0, _isFocused ? 6 : 3),
-              ),
-            ],
-          ),
-          child: TextFormField(
-
-
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            controller: widget.controller,
-            keyboardType: widget.keyboardType,
-            obscureText: widget.isPassword && _obscure,
-            validator: widget.validator,
-            errorBuilder: (context, errorText) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  right:   AppConstants.w * 0.0,
-                  left:   AppConstants.w * 0.07,
-                  bottom: AppConstants.h * 0.012
-                 ),
-                child: Text(
-                  errorText,
-                  style: TextStyle(height: 0.2,
-                      fontSize: AppConstants.w*0.03,
-                      color: Colors.red),
-                ),
-              );
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Focus(
+            onFocusChange: (focus) {
+              setState(() => _isFocused = focus);
             },
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-              fontSize: AppConstants.w * 0.043,
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              labelText: widget.label,
-              labelStyle: TextStyle(
-                color: _isFocused
-                    ? AppColors.primaryColor
-                    : AppColors.textSecondary,
-                fontWeight: FontWeight.w700,
-                fontSize: AppConstants.w * 0.038,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: _isFocused
+                      ? AppColors.primaryColor.withOpacity(0.8)
+                      : (_errorText != null
+                      ? Colors.redAccent
+                      : Colors.grey.shade300),
+                  width: 1.6,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _isFocused
+                        ? AppColors.primaryColor.withOpacity(0.25)
+                        : Colors.black12,
+                    blurRadius: _isFocused ? 18 : 6,
+                    offset: Offset(0, _isFocused ? 6 : 3),
+                  ),
+                ],
               ),
-              hintText: widget.hint,
-              hintStyle: TextStyle(
-                color: Colors.grey[400],
-                fontSize: AppConstants.w * 0.035,
-              ),
-              prefixIcon: widget.prefixIcon != null
-                  ? AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: _isFocused
-                            ? AppColors.primaryColor.withOpacity(0.1)
-                            : Colors.grey.shade100,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        widget.prefixIcon,
-                        color: _isFocused
-                            ? AppColors.primaryColor
-                            : Colors.grey[600],
-                        size: 23,
-                      ),
-                    )
-                  : null,
-              suffixIcon: widget.isPassword
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() => _obscure = !_obscure);
-                      },
-                      child: Icon(
-                        _obscure
-                            ? Icons.visibility_off_rounded
-                            : Icons.visibility_rounded,
-                        color: _isFocused
-                            ? AppColors.primaryColor
-                            : Colors.grey[500],
-                      ),
-                    )
-                  : null,
+              child: TextFormField(
 
-              // 🔥 ثبّت مساحة الـ error تحت الحقل عشان ما يحصل تمدد
-              errorMaxLines: 1,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: AppConstants.h * 0.02,
-                horizontal: AppConstants.w * 0.04,
+                validator: (value) {
+                  final result = widget.validator?.call(value);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      setState(() => _errorText = result);
+                    }
+                  });
+                  return result; // ← مهم جدًا
+                },
+                // ← أضف هذا السطر
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: widget.controller,
+                keyboardType: widget.keyboardType,
+                obscureText: widget.isPassword && _obscure,
+                onChanged: (value) {
+                  final result = widget.validator?.call(value);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      setState(() => _errorText = result);
+                    }
+                  });
+                },
+
+                errorBuilder: null,
+
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: AppConstants.w * 0.04,
+                ),
+                decoration: InputDecoration(
+                  errorText: null,
+
+                  error: null,
+                  errorStyle: TextStyle(
+                      fontSize: 0
+                  ),
+
+                  border: InputBorder.none,
+                  labelText: widget.label,
+                  labelStyle: TextStyle(
+                    color: _isFocused
+                        ? AppColors.primaryColor
+                        : AppColors.textSecondary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: AppConstants.w * 0.035,
+                  ),
+                  hintText: widget.hint,
+                  hintStyle: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: AppConstants.w * 0.035,
+                  ),
+                  prefixIcon: widget.prefixIcon != null
+                      ? AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: _isFocused
+                          ? AppColors.primaryColor.withOpacity(0.1)
+                          : Colors.grey.shade100,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      widget.prefixIcon,
+                      color: _isFocused
+                          ? AppColors.primaryColor
+                          : Colors.grey[600],
+                      size: 23,
+                    ),
+                  )
+                      : null,
+                  suffixIcon: widget.isPassword
+                      ? GestureDetector(
+                    onTap: () {
+                      setState(() => _obscure = !_obscure);
+                    },
+                    child: Icon(
+                      _obscure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: _isFocused
+                          ? AppColors.primaryColor
+                          : Colors.grey[500],
+                    ),
+                  )
+                      : null,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: AppConstants.h * 0.02,
+                    horizontal: AppConstants.w * 0.04,
+                  ),
+                ),
               ),
             ),
+          ),
+
+          // 🎨 Animated Error Bubble
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            switchInCurve: Curves.easeOutBack,
+            switchOutCurve: Curves.easeIn,
+            child: _errorText == null ?
+            SizedBox(height: AppConstants.h * 0.01)
+                : _build_error_widget(_errorText
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _build_error_widget(String ?error) {
+    return Padding(
+      padding: EdgeInsets.only(top: AppConstants.h * 0.008),
+      child: Container(
+        key: ValueKey(_errorText ?? error??""),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppConstants.w * 0.04,
+          vertical: AppConstants.h * 0.008,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.redAccent.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.redAccent, width: 1),
+        ),
+        child: Text(
+          _errorText ?? error??"",
+          style: TextStyle(
+            color: Colors.redAccent,
+            fontWeight: FontWeight.w600,
+            fontSize: AppConstants.w * 0.032,
           ),
         ),
       ),
@@ -155,12 +216,17 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 }
 
+Widget admin_field(
+  String label,
 
-Widget  admin_field(String label, TextEditingController controller,
+  TextEditingController controller, {
+  int maxLines = 1,
+      TextInputType? textInput,
 
-    {int maxLines = 1,      String? Function(String?)? validator,
-    }) {
+      String? Function(String?)? validator,
+}) {
   return TextFormField(
+    keyboardType: textInput ?? TextInputType.text,
     validator: validator,
 
     controller: controller,
@@ -170,9 +236,7 @@ Widget  admin_field(String label, TextEditingController controller,
       labelText: label,
       filled: true,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
     ),
   );
 }

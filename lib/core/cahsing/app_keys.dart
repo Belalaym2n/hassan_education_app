@@ -5,7 +5,7 @@ class AppKeys{
   static const String name="name";
   static const String userId="userId";
   static const String phone="phone";
-  static const String section="phone";
+  static const String stage="stage";
   static const String email="email";
   static const String localLectures="local_lectures";
 }

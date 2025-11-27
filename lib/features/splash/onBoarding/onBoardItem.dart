@@ -55,152 +55,48 @@ class _OnBoardItemState extends State<OnBoardItem>
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: PageView.builder(
-                controller: pageController,
-                itemCount: onBoardList.length,
-                onPageChanged: (index) {
-                  setState(() => currentIndex = index);
-                },
-                itemBuilder: (context, index) {
-                  final model = onBoardList[index];
-                  final isActive = currentIndex == index;
-
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppConstants.w * 0.08,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        buildImage(model.imagePath)
-                            .animate()
-                            .fadeIn(duration: 700.ms, curve: Curves.easeOut)
-                            .moveY(
-                              begin: 60,
-                              end: 0,
-                              curve: Curves.easeOutBack,
-                            ),
-
-                        SizedBox(height: AppConstants.h * 0.04),
-
-                        Text(
-                              model.headline,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.primaryColor,
-                                fontSize: AppConstants.w * 0.065,
-                              ),
-                            )
-                            .animate(target: isActive ? 1 : 0)
-                            .fade(duration: 500.ms)
-                            .moveY(
-                              begin: 20,
-                              end: 0,
-                              curve: Curves.easeOutBack,
-                            ),
-
-                        SizedBox(height: AppConstants.h * 0.02),
-
-                        Text(
-                              model.description,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: AppConstants.w * 0.04,
-                                color: Colors.grey[700],
-                                height: 1.6,
-                              ),
-                            )
-                            .animate(target: isActive ? 1 : 0)
-                            .fade(duration: 600.ms)
-                            .moveY(
-                              begin: 25,
-                              end: 0,
-                              curve: Curves.easeOutCubic,
-                            ),
-
-                        SizedBox(height: AppConstants.h * 0.04),
-
-                        SmoothPageIndicator(
-                              controller: pageController,
-                              count: onBoardList.length,
-                              effect: ExpandingDotsEffect(
-                                spacing: 6.0,
-                                radius: 10.0,
-                                dotWidth: 10.0,
-                                dotHeight: 10.0,
-                                expansionFactor: 3,
-                                dotColor: Colors.grey[300]!,
-                                activeDotColor: AppColors.primaryColor,
-                              ),
-                              onDotClicked: (newIndex) {
-                                pageController.animateToPage(
-                                  newIndex,
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.ease,
-                                );
-                              },
-                            )
-                            .animate(target: isActive ? 1 : 0)
-                            .fade(duration: 700.ms)
-                            .moveY(
-                              begin: 15,
-                              end: 0,
-                              curve: Curves.easeOutBack,
-                            ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // أزرار التنقل بتأثير أنيق
-            OnBoardButtons(
-                  isLoading: isLoading,
-
-                  onNext: () async {
-                    if (currentIndex == onBoardList.length - 1) {
-                      isLoading = true;
-
-                      setState(() {});
-                      await Future.delayed(Duration(milliseconds: 1500));
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        AppRoutes.signUp, // اسم الـ route
-                            (route) => false, // عشان يمسح كل الشاشات اللي قبلها
-                      );
-
-                    } else {
-                      pageController.nextPage(
-                        duration: const Duration(milliseconds: 700),
-                        curve: Curves.easeOutCubic,
-                      );
-                    }
-                  },
-                  onBack: () {
-                    if (currentIndex == 0) {
-                      pageController.nextPage(
-                        duration: const Duration(milliseconds: 700),
-                        curve: Curves.easeOutCubic,
-                      );
-                    } else {
-                      pageController.previousPage(
-                        duration: const Duration(milliseconds: 700),
-                        curve: Curves.easeOutCubic,
-                      );
-                    }
-                  },
-                  isLastPage: currentIndex == onBoardList.length - 1,
-                )
-                .animate()
-                .fadeIn(duration: 800.ms)
-                .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack),
+            _build_content(),
+             _build_on_board_button(),
 
             SizedBox(height: AppConstants.h * 0.02),
           ],
         ),
+      ),
+    );
+  }
+
+  _build_content() {
+    return Expanded(
+      child: PageView.builder(
+        controller: pageController,
+        itemCount: onBoardList.length,
+        onPageChanged: (index) {
+          setState(() => currentIndex = index);
+        },
+        itemBuilder: (context, index) {
+          final model = onBoardList[index];
+          final isActive = currentIndex == index;
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppConstants.w * 0.08),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildImage(model.imagePath),
+
+                SizedBox(height: AppConstants.h * 0.04),
+
+                _build_headline(model.headline, isActive),
+                SizedBox(height: AppConstants.h * 0.02),
+
+                _build_description(model.description, isActive),
+
+                SizedBox(height: AppConstants.h * 0.04),
+                _build_smoothing(isActive),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -219,16 +115,123 @@ class _OnBoardItemState extends State<OnBoardItem>
       child: Hero(
         tag: imagePath,
         child:
-            Image.asset(
-                  imagePath,
-                  height: AppConstants.h * 0.4,
-                  width: AppConstants.w / 1.2,
-                  fit: BoxFit.cover,
-                )
-                .animate()
-                .fadeIn(duration: 800.ms)
-                .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
+        Image.asset(
+          imagePath,
+          height: AppConstants.w * 0.7,
+          width: AppConstants.w / 1.2,
+          fit: BoxFit.cover,
+        )
+            .animate()
+            .fadeIn(duration: 800.ms)
+            .scale(
+          begin: const Offset(0.9, 0.9),
+          end: const Offset(1, 1),
+        ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: 700.ms, curve: Curves.easeOut)
+        .moveY(begin: 60, end: 0, curve: Curves.easeOutBack);
   }
+
+  _build_headline(String headline, bool isActive) {
+    return Text(
+      headline,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontWeight: FontWeight.w900,
+        color: AppColors.primaryColor,
+        fontSize: AppConstants.w * 0.065,
+      ),
+    )
+        .animate(target: isActive ? 1 : 0)
+        .fade(duration: 500.ms)
+        .moveY(begin: 20, end: 0, curve: Curves.easeOutBack);
+  }
+  _build_description(String description, bool isActive) {
+    return Text(
+      description,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+
+        fontSize: AppConstants.w * 0.04,
+        color: Colors.grey[700],
+        height: 1.6,
+      ),
+    )
+        .animate(target: isActive ? 1 : 0)
+        .fade(duration: 600.ms)
+        .moveY(begin: 25, end: 0, curve: Curves.easeOutCubic);
+  }
+  _build_smoothing(bool isActive) {
+    return SmoothPageIndicator(
+      controller: pageController,
+      count: onBoardList.length,
+      effect: ExpandingDotsEffect(
+        spacing: 6.0,
+        radius: 10.0,
+        dotWidth: 10.0,
+        dotHeight: 10.0,
+        expansionFactor: 3,
+        dotColor: Colors.grey[300]!,
+        activeDotColor: AppColors.primaryColor,
+      ),
+      onDotClicked: (newIndex) {
+        pageController.animateToPage(
+          newIndex,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+      },
+    )
+        .animate(target: isActive ? 1 : 0)
+        .fade(duration: 700.ms)
+        .moveY(begin: 15, end: 0, curve: Curves.easeOutBack);
+  }
+
+  _build_on_board_button() {
+    return OnBoardButtons(
+          isLoading: isLoading,
+
+          onNext: () async {
+            if (currentIndex == onBoardList.length - 1) {
+              isLoading = true;
+
+              setState(() {});
+              await Future.delayed(Duration(milliseconds: 1500));
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.login, // اسم الـ route
+                (route) => false, // عشان يمسح كل الشاشات اللي قبلها
+              );
+            } else {
+              pageController.nextPage(
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeOutCubic,
+              );
+            }
+          },
+          onBack: () {
+            if (currentIndex == 0) {
+              pageController.nextPage(
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeOutCubic,
+              );
+            } else {
+              pageController.previousPage(
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeOutCubic,
+              );
+            }
+          },
+          isLastPage: currentIndex == onBoardList.length - 1,
+        )
+        .animate()
+        .fadeIn(duration: 800.ms)
+        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack);
+  }
+
+
+
+
 }

@@ -21,6 +21,15 @@ class Validators {
     }
     return null;
   }
+  static String? numberField(String? value) {
+    if (value == null || value.isEmpty) {
+      return "هذا الحقل مطلوب";
+    }
+    if (double.tryParse(value) == null) {
+      return "من فضلك أدخل رقمًا صحيحًا";
+    }
+    return null;
+  }
 
   /// التحقق إن الرابط يوتيوب فقط
   static String? youtubeUrl(String? value,

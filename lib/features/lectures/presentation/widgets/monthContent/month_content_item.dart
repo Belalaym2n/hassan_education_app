@@ -1,11 +1,13 @@
+import 'package:amr_rezk_education/features/dashboard/addLecture/data/models/lecture_model.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../../core/utils/app_constants.dart';
 import 'lecture_name_item.dart';
 
 class  ContentScreen extends StatefulWidget {
-  const ContentScreen({super.key});
+    ContentScreen({super.key,required this.lectures});
 
+    List<LectureModel>lectures;
   @override
   State<ContentScreen> createState() => _ContentScreenState();
 }
@@ -43,7 +45,7 @@ class _ContentScreenState extends State<ContentScreen>
   @override
   void initState() {
     super.initState();
-    expanded = List.generate(lectures.length, (index) => false);
+    expanded = List.generate(widget.lectures.length, (index) => false);
   }
 
   @override
@@ -57,10 +59,10 @@ class _ContentScreenState extends State<ContentScreen>
         vertical: AppConstants.h * 0.02,
     ),
     child:  ListView.builder(
-        itemCount: lectures.length,
+        itemCount:widget.lectures.length,
         itemBuilder: (context, index) {
-          final lecture = lectures[index];
-          final isExpanded = expanded[index];
+          final lecture = widget.lectures[index];
+          final isExpanded =expanded[index];
 
           return AnimatedContainer(
             duration: const Duration(milliseconds: 300),
@@ -77,9 +79,9 @@ class _ContentScreenState extends State<ContentScreen>
               ],
             ),
             child:LectureNameItem(
-              title: lecture['title'].toString(),
-              time: lecture['time'].toString(),
-              description: lecture['description'].toString(),
+              title: lecture.name.toString(),
+              time: lecture.description.toString(),
+              description: lecture.description.toString(),
                isExpanded: isExpanded,
 
             )

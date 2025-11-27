@@ -44,11 +44,11 @@ class _LoginScreenState extends State<LoginScreen> {
           } else if (state is LoginSuccess) {
             Navigator.pop(context); // تغلق اللودينج
 
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.bottomNav,
-                (route) => false,
-              );
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.bottomNav,
+              (route) => false,
+            );
 
             loginScreen.currentState?.clearForm();
           } else if (state is LoginFailure) {

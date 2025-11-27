@@ -1,44 +1,40 @@
 import 'package:amr_rezk_education/core/utils/app_constants.dart';
-import 'package:amr_rezk_education/features/dashboard/addLecture/presentation/bloc/add_lecture_events.dart';
+import 'package:amr_rezk_education/features/dashboard/addLecture/presentation/bloc/lectureBloc/add_lecture_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/sharedWidgets/buttons.dart';
+import '../../../../../../core/sharedWidgets/custom_form_field.dart';
 import '../../../../../../core/sharedWidgets/selected_section.dart';
 import '../../../../../../core/utils/app_colors.dart';
 import '../../../../../../core/utils/app_validator.dart';
 import '../../../../../../core/sharedWidgets/cust_admin_field.dart';
 import '../../../data/models/lecture_model.dart';
-import '../../bloc/add_lecture_status.dart';
-import '../../bloc/add_lectures_bloc.dart';
+import '../../bloc/lectureBloc/add_lecture_status.dart';
+import '../../bloc/lectureBloc/add_lectures_bloc.dart';
+import '../../bloc/playListBloc/play_list_bloc.dart';
 
 class AddLectureScreenItem extends StatefulWidget {
   AddLectureScreenItem({
     super.key,
-    required this.onFormChanged,
     required this.context,
     required this.nameCtrl,
-    required this.isValid,
     required this.descCtrl,
-    required this.codeCtrl,
     required this.isPlayList,
-    required this.stage,
-    required this.choose_stage,
-    required this.urlCtrl,
+      required this.urlCtrl,
+    required this.pricing,
+    required this.duration,
   });
 
   final TextEditingController nameCtrl;
-  String stage;
-  bool isValid;
-  final TextEditingController descCtrl;
+  final TextEditingController duration;
+  final TextEditingController pricing;
+   final TextEditingController descCtrl;
 
   final TextEditingController urlCtrl;
 
-  final TextEditingController codeCtrl;
   Function(LectureModel lecture) context;
-  Function(String, int) choose_stage;
 
   bool isPlayList = false;
-  Function onFormChanged;
 
   @override
   State<AddLectureScreenItem> createState() => AddLectureScreenState();
@@ -50,21 +46,13 @@ class AddLectureScreenState extends State<AddLectureScreenItem> {
   @override
   void initState() {
     super.initState();
-
-    widget.nameCtrl.addListener(_onFormChanged);
-    widget.descCtrl.addListener(_onFormChanged);
-    widget.urlCtrl.addListener(_onFormChanged);
-    widget.codeCtrl.addListener(_onFormChanged);
-  }
-
-  void _onFormChanged() {
-    widget.onFormChanged();
   }
 
   void _onSaveLecture() {
     print("saving...");
 
-    if (!formKey.currentState!.validate()) {
+    if (!formKey.currentState!.validate() ||
+        context.read<AddLectureBloc>().currentStage == 'المرحلة الدراسية') {
       print("validation failed");
       return;
     }
@@ -72,12 +60,14 @@ class AddLectureScreenState extends State<AddLectureScreenItem> {
     print("validation passed");
 
     final lecture = LectureModel(
-      duration: "12123",
-      id: '',
+      price: widget.pricing.text,
+      duration: widget.duration.text,
+      id: 'we will add on ds remote impl',
       name: widget.nameCtrl.text.trim(),
       description: widget.descCtrl.text.trim(),
       videoUrl: widget.urlCtrl.text.trim(),
-      stage: widget.stage,
+      stage:         context.watch<AddLectureBloc>().currentStage,
+
       isPlayList: widget.isPlayList,
     );
 
@@ -89,12 +79,14 @@ class AddLectureScreenState extends State<AddLectureScreenItem> {
     widget.nameCtrl.dispose();
     widget.descCtrl.dispose();
     widget.urlCtrl.dispose();
-    widget.codeCtrl.dispose();
+    widget.pricing.dispose();
+    widget.duration.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _build_app_bar(),
@@ -106,10 +98,7 @@ class AddLectureScreenState extends State<AddLectureScreenItem> {
   _build_screen_content() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
-      child: BlocBuilder<AddLectureBloc, AddLectureState>(
-        builder: (context, state) {
-          final bool isButtonEnabled = state.isValid;
-          return Card(
+      child:   Card(
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -121,64 +110,78 @@ class AddLectureScreenState extends State<AddLectureScreenItem> {
                 key: formKey,
                 child: Column(
                   children: [
-                    custom_admin_field(
-                      widget.nameCtrl,
+                    admin_field(
                       'اسم المحاضرة',
+                      widget.nameCtrl,
                       validator: Validators.requiredField,
                     ),
 
                     SizedBox(height: AppConstants.h * 0.04),
 
-                    custom_admin_field(widget.descCtrl, 'الوصف', maxLines: 3),
+                    admin_field(
+                      'الوصف',
+                      widget.descCtrl,
+                      validator: Validators.requiredField,
+                      maxLines: 3,
+                    ),
 
                     SizedBox(height: AppConstants.h * 0.04),
+                    admin_field(
+                      textInput: TextInputType.number,
 
-                    custom_admin_field(
-                      widget.urlCtrl,
+                      "سعر الـمحاضرة ",
+                      widget.pricing,
+                      maxLines: 1,
+
+                      validator: Validators.numberField,
+                    ),
+                    SizedBox(height: AppConstants.h * 0.04),
+                    admin_field(
+                      textInput: TextInputType.number,
+
+                      "المدة",
+                      widget.duration,
+                      maxLines: 1,
+
+                      validator: Validators.numberField,
+                    ),
+                    SizedBox(height: AppConstants.h * 0.04),
+
+                    admin_field(
                       'رابط الفيديو',
+                      widget.urlCtrl,
+
                       validator: Validators.youtubeUrl,
                     ),
 
                     SizedBox(height: AppConstants.h * 0.04),
-                    if (!widget.isPlayList)
-                      SelectedSection(
-                        isDesktop: true,
-                        items: StaticList.sections,
 
-                        index: context.watch<AddLectureBloc>().index,
-                        itemName: context.watch<AddLectureBloc>().currentStage,
-                        selectItem: (compoundName, index) {
-                          widget.choose_stage(compoundName, index);
+                SelectedSection(
+            isDesktop: true,
+            items: StaticList.sections,
 
-                          print(compoundName);
-                        },
-                      ),
-                    if (widget.isPlayList) ...[
-                      SizedBox(height: AppConstants.h * 0.03),
-                      custom_admin_field(
-                        widget.codeCtrl,
-                        'كود البلاي ليست (اختياري)',
-                      ),
-                    ],
+            index: context.watch<AddLectureBloc>().index,
+            itemName: context.watch<AddLectureBloc>().currentStage,
+            selectItem: (compoundName, index) {
+            context.read<AddLectureBloc>().add(
+              ChooseSectionEvent(compoundName, index),
+            );
+              }),
+
+
                     SizedBox(height: AppConstants.h * 0.05),
                     large_button(
                       isDesktop: true,
                       buttonName: 'حفظ المحاضرة',
-                      isDisable: !widget.isValid,
-                      onPressed: isButtonEnabled
-                          ? () => _onSaveLecture()
-                          : () {
-                              print("null");
-                            },
+                      isDisable: false,
+                      onPressed: () => _onSaveLecture(),
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+
+
+    )));
   }
 
   AppBar _build_app_bar() {

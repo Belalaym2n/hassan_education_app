@@ -3,6 +3,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 
 class AppConstants {
+  static late double h;
+
+  static late double w;
+
+  static void initSize(BuildContext context) {
+    h = MediaQuery.of(context).size.height;
+    w = MediaQuery.of(context).size.width;
+  }
+
   static const String base_url = "https://accept.paymob.com/api";
   static const String auth_taken_enpoint = "/auth/tokens";
   static const String order_id_enpoint = "/ecommerce/orders";
@@ -14,24 +23,12 @@ class AppConstants {
       'e4e456c1a7e52109c3f05361598149731f15d42fe55697425f68db7d70ae89b7';
   static String oneSignalAppId = "cced843e-abcd-47ae-b444-e947ef337d1a";
   static String oneSignalApiKey =
-      "os_v2_app_ztwyipvlzvd25nce5fd66m35dknf6qiwsecudqmm63ogb3dfzqbtxbzksnyg6w3qota2nhqqrs6zlrptkyoxr2zhqgun5wkfddfvmwi";
+      "os_v2_app_ztwyipvlzvd25nce5fd66m35djdkn6ljf23ufpmshyr4dt4fzvqhfdedom27pwrvgrnooeqz5p32mqmhqbdsardhisoxgd4a4bjqooq";
   static const String imageUrl = "assets/images/";
-
-  static late double h;
-
-  static late double w;
-
-  static void initSize(BuildContext context) {
-    h = MediaQuery.of(context).size.height;
-    w = MediaQuery.of(context).size.width;
-  }
 }
 
 class StaticList {
   static final List<String> sections = [
-    'الصف الرابع الابتدائي',
-    'الصف الخامس الابتدائي',
-    'الصف السادس الابتدائي',
     'الصف الأول الإعدادي',
     'الصف الثاني الإعدادي',
     'الصف الثالث الإعدادي',

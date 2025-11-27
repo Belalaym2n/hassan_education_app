@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import '../../../../../core/cahsing/get_storage_helper.dart';
 import '../../../../../core/handleErrors/result_pattern.dart';
+import '../../../../lectures/data/models/play_list_model.dart';
 import '../../domain/repositories/add_play_list_domain_repo.dart';
 import '../data_sources/local/play_list_local.dart';
 import '../data_sources/remote/playLIST/add_playlist_ds.dart';
@@ -41,12 +42,16 @@ class PlaylistDataRepo implements PlaylistDomainRepo {
   @override
   Future<Result> uploadLectures(
     List<LectureModel> lectures,
-    String playlistId,
-  ) async {
+    String playlistId, {
+    required String stage,
+    required PlaylistModel model,
+  }) async {
     try {
       final res = await playlistDS.uploadLecturesToFirestore(
         lectures,
         playlistId,
+        stage: stage,
+        model: model,
       );
       if (res.isSuccess) {
         await clearLocalLectures();

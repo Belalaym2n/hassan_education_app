@@ -71,7 +71,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                 EmptyNotificationsWidget():
                 ShowAllNotificationScreen(
-                  notifications: state.notifications,
+                  notifications:  state.notifications,
                 );
               } else if (state is UserNotificationFailure) {
                 print("error : ${state.message}");
